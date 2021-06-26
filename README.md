@@ -1,5 +1,8 @@
 # JuttaPasal-Ecommerce
-
+=> The project is an ecommerce website project which is my 6th semster project.
+=> As this is first version, it lack alot of features as it was done while i was learning django.
+=> AJAX technology is not used in the project as it was done few month before uploading it.
+=> Two of type youtube channels came alot handy while doing this project: i) Feel Free To Code  ii) Dennis Ivy
 
 
 1) Home page
