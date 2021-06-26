@@ -1,0 +1,26 @@
+{% extends 'base.html'  %}
+{% block title %} JuttaPasal register {% endblock title %}  
+
+{% block body %}  
+<style type="text/css">
+    .errorlist{
+      color: red;
+    }
+  </style>
+ <div class="container mt-3">
+    <div class="row">
+
+			<div class="col-lg-5 mx-auto">
+				<h2 class="alert alert-light border rounded text-center">Create An Account</h2>
+				<form action="" method="post" novalidate> {% csrf_token %}  					
+  					{% for fm in form %}
+  						{{fm.label_tag}} {{fm}}<span class="errorlist">{{fm.errors|striptags}}</span><br>
+  					{% endfor %}
+					<div class="form-group mt-3 mb-5"> 
+						<input type="submit"value="Register" class="form-control btn btn-success">
+					</div>
+				</form>
+			</div> 
+		</div>
+	</div>
+{% endblock body %}

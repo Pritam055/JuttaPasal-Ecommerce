@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %} JuttaPasal Admin Panel {% endblock title %}
+{% block body %}
+{% load cart %}
+<div class="container-fluid mt-3">
+  <div class="row">
+    <br>
+    {% include 'store/status.html' %}
+    <div class="row">
+      <div class="col-md-5">
+        <h5>CUSTOMERS:</h5>
+        <hr>
+        <div class="card card-body">
+          <div class="scrollable">
+            <table class="table table-hover">
+              <tr class="table-active">
+                <th></th>
+                <th>Customer</th>
+                <th>Email</th>
+              </tr>
+
+              {% for customer in customers %}
+              <tr>
+                <td><a href="{% url 'customerfulldetail' customer.id %}" class="btn btn-info btn-sm">View</a></td>
+                <td>{{customer.user.username}}</td>
+                <td>{{customer.user.email}}</td>
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-7">
+
+        <h5 style="display:  inline;">ORDERS</h5>
+        <a style="display: inline; position: absolute; right: 60px;" href="{% url 'adminproducts'  %}"
+          class="btn btn-primary mx-auto float-right">All Products</a>
+        <hr>
+        <div class="card card-body">
+          {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-success text-center" role="alert"> {{message}} </div>
+          {% endfor %}
+          {% endif %}
+
+          <div class="scrollable table-responsive">
+            <table class="table table-hover">
+              <tr class="table-active">
+                <th>Product</th>
+                <th>Date Orderd</th>
+                <th>Status</th>
+                <th>Update</th>
+                <th>Remove</th>
+              </tr>
+
+              {% for order in orders %}
+              <tr>
+                <td> {{order.product}} </td>
+                <td>{{order.date|date:"j N, Y"}}</td>
+                <td>
+                  {% if order.status %}
+                  <small class="badge bg-success">Completed</small>
+                  {% else %}
+                  <small class="badge bg-warning">Pending</small>
+                  {% endif %}
+                </td>
+                <td><a href="{% url 'orderdetail' order.id %}" class="btn btn-info btn-sm">Update</a></td>
+                <td>
+                  <form action="{% url 'deleteorder' order.id %}" method='post'>
+                    {% csrf_token %}
+                    <input type="submit" value="Delete" class="btn btn-sm btn-danger">
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

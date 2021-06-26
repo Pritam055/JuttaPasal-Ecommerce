@@ -1,0 +1,132 @@
+{% extends 'base.html'  %}
+{% load humanize %}
+{% block title %}All products {% endblock title %}
+
+{% block body %}
+{% load cart %} 
+<style type="text/css">
+	img{
+		height: 550px;
+		width: 550px;
+	}
+</style> 
+
+<div class="container mt-3">
+	<div class="row">
+	
+		<div class="col-lg-7 border">
+			<img src="{{product.image.url}}">
+		</div> 
+
+		<div class="col-lg-5 border">
+			<h3 class="mt-3">{{product.name}}</h3>
+			<hr>
+
+			<div class="container-fluid">
+
+				<div class='row'>
+					<div class='col-lg-6 border'>
+						<p class=""><b>Category: {{product.category}}</b></p>
+						<p class=""><b>Price: {{product.price|intcomma}}</b></p>
+					</div>
+
+					<div class="col-lg-6 border">
+
+						{% comment %}
+						{% if product.qty|subtract:quantity_in_cart is not 0 %}
+						<p class=""><b>Stock: {{product.stock}}</b></p>
+						{% else %}
+						<p class="text-danger"><b>Stock: Out of Stock</b></p>
+						{% endif %}
+
+						{% if product.id|is_in_cart:request.session.cart %}
+						{% with quantity_in_cart=product|qty_calculate:request.session.cart %}
+						
+						<p class=""><b>Qty: {{ product.qty|subtract:quantity_in_cart }}</b></p>
+						
+						{% endwith %}
+						{% else %}
+						<p class=""><b>Qty: {{product.qty}}</b></p>
+						{% endif %}
+
+						{% endcomment %}
+
+
+
+						{% if product.qty is not  0 %}
+
+						{% if product.id|is_in_cart:request.session.cart %}
+						{% with quantity_in_cart=product|qty_calculate:request.session.cart %}
+
+						{% if product.qty|subtract:quantity_in_cart is not 0 %}
+						<p class=""><b>Stock: {{product.stock}}</b></p>
+						<p class=""><b>Qty: {{ product.qty|subtract:quantity_in_cart }}</b></p>
+						{% else %}
+						<p class="text-danger"><b>Stock: Out of Stock</b></p>
+						<p class=""><b>Qty: {{ product.qty|subtract:quantity_in_cart }}</b></p>
+						{% endif %}
+
+						{% endwith %}
+
+						{% else %}
+						<p class="text"><b>Stock: {{product.stock}}</b></p>
+						<p class=""><b>Qty: {{product.qty}}</b></p>
+						{% endif %}
+						{% else %}
+						<p class="text-danger"><b>Stock: Out of Stock</b></p>
+						<p class=""><b>Qty: {{product.qty}}</b></p>
+						{% endif %}
+					</div>
+
+				</div>
+			</div>
+
+			<hr>
+			<p><h5>Description:</h5>{{product.description}}</p>
+			<hr>
+
+			{% if product.qty is not 0 %}
+
+
+			<div class="card-footer row">
+				<div class="row">
+
+					{% if product.id|is_in_cart:request.session.cart %}
+					<form method="post" action="{% url 'homepage' %}#{{product.id}}" class="col-2">
+						{% csrf_token %}
+						<input hidden type='text' name="product_id" value="{{product.id}}">
+						<input hidden type="text" name='decrease' value="True">
+						<input type="submit" class="btn btn-block btn-secondary" value=" - ">
+					</form>
+
+					<div class="text-center col">{{product|count_quantity:request.session.cart}} in cart</div>
+					
+					{% if not product|compare_cart_and_qty:request.session.cart %}
+					<form method="post" action="{% url 'homepage' %}#{{product.id}}" class="col-2">
+						{% csrf_token %}
+						<input hidden type='text' name="product_id" value="{{product.id}}">
+						<input type="submit" class="btn btn-block btn-secondary" value=" + ">
+					</form>
+					{% endif %}
+					{% else %}
+					<form action="{% url 'homepage' %}#{{product.id}}" method="post" class="text-center">
+						{% csrf_token %}
+						<input hidden type="text" name="product_id" value="{{product.id}}"> 
+						<input type="submit"  class="btn btn-block btn-primary" value="Add To Cart"> 
+					</form> 
+
+					{% endif %}
+				</div>
+			</div>	  
+		</div>
+	</div>
+</div>
+
+{% comment %}	<form action="{% url 'homepage' %}#{{product.id}}" method="post">
+	{% csrf_token %}
+	<input hidden type="text" name="product_id" value="{{product.id}}"> 
+	<input type="submit"  class="btn btn-block btn-primary" value="Add To Cart"> 
+</form> 
+{% endcomment %}
+{% endif %}
+{% endblock body %}

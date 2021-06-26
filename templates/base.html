@@ -1,0 +1,121 @@
+<!doctype html>
+{% load static %}
+{% load check %}
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- favicon-->
+  <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/icon">  
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+  <title>
+    {% block title %}
+    {% endblock title %}
+  </title>
+  <style type="text/css">
+    #logo {
+      height: 55px;
+      width: 210px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+
+      <a href="{% url 'homepage'%}"><img class="rounded" src="{% static 'images/logo2 - Copy.png' %}" id='logo'></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+
+            <a class="nav-link active" aria-current="page" href="{% url 'homepage' %}">Store</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'allproduct' %}">Categories</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'cart' %}">
+              Cart
+              <small class="bg-success badge">{{request.session.cart.keys|length}}</small>
+            </a>
+          </li>
+          
+          {% if request.user.is_authenticated %}
+            {% if request.user.groups.all|check_admin %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'adminpanel' %}">Admin_Panel</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'orders' %}">Orders</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page"
+                href="{% url 'profile' request.session.customer_id %}">Profile</a>
+            </li>
+            {% endif %}
+          {% endif %}
+        </ul>
+        <ul class="navbar-nav d-flex">
+
+          {% if request.user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">Logout</a>
+            </li>
+          {% else %}
+          <ul class="navbar-nav d-flex">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'register'  %}">SignUp</a>
+            </li>
+          {% endif %}
+          </ul>
+          <form class="d-flex" method='GET' action="{% url 'searchproduct' %}">
+            <input class="form-control me-2" type="search" name='keyword' placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+          {% if request.user.is_authenticated %}
+          <span class="h4 ml-3" style="color:white;"><u>User: {{request.user.username}}</u></span>
+          {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  {% comment %}
+    {% if request.user.groups.all|check_admin %}
+    <div class="container-fluid mt-3 ">
+    {% else %}
+      <div class="container mt-3">
+    {% endif %}
+    <div class="row">
+  {% endcomment %}
+
+    {% block body %}
+    {% endblock body %} 
+        <footer class="container-fluid footer mt-auto py-3 bg-light text-center text-muted"></footer>
+
+        <script type="text/javascript">
+          var year = new Date().getFullYear();
+          var date = `@copy; JuttaPasal ${year}. All Rights Reserved.`;
+          document.getElementsByTagName('footer')[0].innerHTML = date;
+        </script> 
+
+        <!-- Option 1: Bootstrap Bundle with Popper -->
+        <script type="text/javascript" src="{% static 'js/pooper.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+</html>

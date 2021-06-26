@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %} JuttaPasal Order Detail {% endblock title %}
+{% block body %}
+<div class="container-fluid mt-3">
+  <div class="row">
+    <div class="col-lg-3 mx-auto">
+      <p class="display-5">Order Detail</p>
+      <hr>
+      <form action="" method="post">
+        {% csrf_token %}
+        {% for fm in form %}
+        <p>{{fm.label_tag}} {{fm}} {{fm.errors|striptags}}</p>
+        {% endfor %}
+        <input type="submit" value="Update" class="btn btn-success"> <a href="{% url 'adminpanel' %}"
+          class="btn btn-outline-secondary mx-2">Cancel</a>
+      </form>
+      <hr>
+    </div>
+  </div>
+</div>
+{% endblock body %}

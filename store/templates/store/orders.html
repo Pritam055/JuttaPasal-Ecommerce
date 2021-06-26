@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %} JuttaPasal Orders {% endblock title %}
+
+{% block body %}
+{% load cart %}
+<div class="container mt-3">
+  <div class="row">
+
+    <p class="display-5 pl-4 ml-4">Your Orders</p>
+
+    <div class="table-responsive"></div>
+      <table class="table table-hover text-center">
+        <thead style="background-color:#b9d3d8;">
+          <tr>
+            <td scope="col">Sno</td>
+            <td scope="col">Image</td>
+            <td scope="col">Product</td>
+            <td scope="col">Address</td>
+            <td scope="col">Date</td>
+            <td scope="col">Quantity</td>
+            <td scope="col">Price</td>
+            <td scope="col">Total</td>
+            <td scope="col">Status</td>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% if orders %}
+          {% for order in orders %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td><img src="{{order.product.image.url}}" style="height:90px; width: 90px;"></td>
+            <td>{{order.product.name}}</td>
+            <td>{{order.address}}</td>
+            {# <td>{{order.date|date:"N j,Y"}}</td> #}
+            <td>{{order.date}}</td>
+            <td>{{order.quantity}}</td>
+            <td>Rs. {{order.price|intcomma}}</td>
+            <td>Rs. {{order.quantity|total_order_price:order.price|intcomma}} </td>
+            <td>
+              {# {{order.status|default:'pending'}} #}
+              {% if order.status %}
+              <small class="badge bg-success">Completed</small>
+              {% else %}
+              <small class="badge bg-warning">Pending</small>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+
+          {% else %}
+          <tr>
+            <td class="text-center" colspan="6">!!! Cart is empty !!!</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock body %}

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %} JuttaPasal Cart {% endblock title %}
+
+{% block body %}
+{% load cart %}
+<div class="container mt-3">
+  <div class="row">
+    <h1>Cart</h1>
+
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead style="background-color:#b9d3d8;">
+          <tr>
+            <td scope="col">Sno</td>
+            <td scope="col">Product_Image</td>
+            <td scope="col">Product_name</td>
+            <td scope="col">Quantity</td>
+            <td scope="col">Unit_Price</td>
+            <td scope="col">Total Price</td>
+            <td scope="col">Action</td>
+          </tr>
+        </thead>
+        <tbody>
+          {% if products %}
+          {% for product in products %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td><img src="{{product.image.url}}" style="height:90px; width: 90px;"></td>
+            <td>{{product.name}}</td>
+            <td>{{product|count_quantity:request.session.cart}}</td>
+            <td>Rs. {{product.price|intcomma}}</td>
+            <td>Rs. {{product|total_price:request.session.cart|intcomma}} </td>
+            <td>
+              <form action="{% url 'cancel' %}" method="post">
+                {% csrf_token %}
+                <input type="text" name="product_id" value="{{product.id}}" hidden>
+                <input type="submit" class="btn btn-outline-danger btn-sm" value="Cancel">
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+
+          {% else %}
+          <tr>
+            <td class="text-center" colspan="6">!!! Cart is empty !!!</td>
+          </tr>
+
+          {% endif %}
+        </tbody>
+        <tfoot>
+          {% if request.session.cart %}
+          <tr>
+            <td colspan=4></td>
+            <td>Total</td>
+            <td>Rs. {{ products|total_cart_price:request.session.cart|intcomma }}</td>
+          </tr>
+          {% endif %}
+
+          {% if request.user.is_authenticated and request.session.cart %}
+          <tr>
+            <td colspan=5></td>
+            <td><a class="btn btn-primary border rounded" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">CheckOut</a></td>
+          </tr>
+          {% endif %}
+        </tfoot>
+      </table>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">CheckOut</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+
+            <form action="{% url 'checkout' %}" method="post">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" name="address" id="" class="form-control" placeholder="">
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="text" name="phone" id="" class="form-control" placeholder="">
+              </div>
+              <input type="submit" value="CheckOut" class="btn btn-outline-success  col-lg-6 mt-3">
+            </form>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock body %}

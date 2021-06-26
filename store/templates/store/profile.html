@@ -1,0 +1,44 @@
+{% extends 'base.html'  %}
+{% load static %}
+{% load humanize %}
+{% block title %} User Profile {% endblock title %}
+
+{% block body %}
+{% load cart %} 
+<style type="text/css">
+	img{
+		height: 250;
+		width: 250px;
+	}
+</style> 
+<div class="container mt-3">
+	<div class="row">
+		<div class="row mx-auto mb-4" style="width: 80%;">
+			{% for message in messages %}
+
+			<div class="alert alert-success ">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<strong>Success!</strong> Indicates a successful or positive action.
+			</div>
+		</div>
+		{% endfor %}
+
+		<div class="col-lg-4 border">
+			<img class="rounded-circle mt-5" src="{% if customer.image %} {{customer.image.url}} {% else %}{% static 'default.png'  %}{% endif %}" >
+		</div> 
+
+		<div class="col-lg-8 border">
+			<h3 class="mt-3">Username: {{customer.user.username}}</h3>
+			<hr>
+			<p class=""><b>First_name: {% if customer.first_name %} {{customer.first_name}} {% else %}__________{% endif %}</b></p>
+			<p class=""><b>Last_name: {% if customer.first_name %} {{customer.last_name}} {% else %}__________{% endif %}</b></p>
+			<p class=""><b>Email: {% if customer.user.email %} {{customer.user.email}} {% else %}__________{% endif %}</b></p>		
+			<p class=""><b>Address: {% if customer.address %} {{customer.address}} {% else %}__________{% endif %}</b></p>
+			<p class=""><b>Phone: {% if customer.phone %} {{customer.phone}} {% else %}__________{% endif %}</b></p>
+			<p class=""><b>Total Orders: {{total_orders}}</b></p>
+			<hr>
+			<a  class="btn btn-block btn-info  mb-3 " href="{% url 'editprofile' customer.id %}">Edit Profile</a> 
+		</div>
+	</div> 
+</div>
+{% endblock body %}

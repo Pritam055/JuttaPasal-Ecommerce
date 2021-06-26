@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %} JuttaPasal Index {% endblock title %}
+
+{% block body %}
+{% load cart %}
+<style type="text/css">
+	img {
+		height: 266px;
+		width: 100px;
+	}
+</style>
+
+<div class="container mt-3">
+	<div class="row">
+		<div class="col-lg-2 mx-auto ">
+			<div class="list-group text-center">
+				<a href="{% url 'homepage'%}" class="list-group-item " aria-current="true">All Category</a>
+				{% for category in categories %}
+				<a href="{% url 'homepage' %}?category_id={{category.id}}" class="list-group-item"
+					aria-current="true">{{category.name}}</a>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="col-lg-10 mx-auto">
+			<div class="row mx-auto">
+				{% for product in products %}
+
+				<div class="card  mb-3" id={{product.id}} style="width: 18rem;">
+					<img src="{{product.image.url}}" class="card-img-top">
+					<div class="card-body">
+						<a href="{%  url 'productdetail' product.id %}" style="text-decoration: none;">
+							<h5 class="card-title">{{product.name}}</h5>
+						</a>
+						<p class="card-text"><b>Rs. {{product.price|intcomma}}</b></p>
+					</div>
+					{% if product.qty is not 0 %}
+					<div class="card-footer row">
+						<div class="row">
+							{% if product.id|is_in_cart:request.session.cart %}
+							<form method="post" action="{% url 'homepage' %}#{{product.id}}" class="col-2">
+								{% csrf_token %}
+								<input hidden type='text' name="product_id" value="{{product.id}}">
+								<input hidden type="text" name='decrease' value="True">
+								<input type="submit" class="btn btn-block btn-secondary" value=" - ">
+							</form>
+							<div class="text-center col">{{product|count_quantity:request.session.cart}} in cart</div>
+
+							{% if not product|compare_cart_and_qty:request.session.cart %}
+							<form method="post" action="{% url 'homepage' %}#{{product.id}}" class="col-2">
+								{% csrf_token %}
+								<input hidden type='text' name="product_id" value="{{product.id}}">
+								<input type="submit" class="btn btn-block btn-secondary" value=" + ">
+							</form>
+							{% endif %}
+
+							{% else %}
+							<form action="{% url 'homepage' %}#{{product.id}}" method="post" class="text-center">
+								{% csrf_token %}
+								<input hidden type="text" name="product_id" value="{{product.id}}">
+								<input type="submit" class="btn btn-block btn-secondary" value="Add To Cart">
+							</form>
+
+							{% endif %}
+						</div>
+					</div>
+					{% else %}
+					<p class="text-center text-danger"><b>Out of Stock</b></p>
+					{% endif %}
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock body %}

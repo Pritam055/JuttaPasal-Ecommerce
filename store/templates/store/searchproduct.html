@@ -1,0 +1,38 @@
+{% extends 'base.html'  %}
+{% load humanize %}
+{% block title %} Search Product  {% endblock title %}
+
+{% block body %}
+{% load cart %} 
+<style type="text/css">
+	img{
+		height: 200px;
+		width: 200px;
+	}
+</style>
+<div class="container mt-3">
+	<div class="row">
+		{% for product in products %} 
+		<div class="col-lg-4">
+			<img src="{{product.image.url}}">
+		</div> 
+
+		<div class="col-lg-8"> 
+			 <h3 class="card-title"><a  style="color:black;text-decoration: none;" href="{%  url 'productdetail' product.id %}" style="text-decoration: none;">{{product.name}}</a></h3>
+			<hr>
+			<p class="text-success"><b>Category: {{product.category}}</b></p>
+			<p class="text-success"><b>Price: {{product.price|intcomma}}</b></p>
+			<hr>
+			<p><h5>Description:</h5>{{product.description}}</p>
+			<hr>
+			<form action="{% url 'homepage' %}#{{product.id}}" method="post">
+				{% csrf_token %}
+				<input hidden type="text" name="product_id" value="{{product.id}}"> 
+				<input type="submit"  class="btn btn-block btn-primary mb-4" value="Add To Cart"> 
+			</form> 
+		</div>
+		<hr><br><br>
+		{% endfor %}
+	</div>
+</div>
+{% endblock body %}
